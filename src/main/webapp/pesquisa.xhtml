@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Pesquisa de Pessoas</title>
+</h:head>
+<h:body>
+    <h:form id="form">
+        <p:panel header="Pesquisar Pessoas" style="width: 50%; margin: auto; text-align: center;">
+            <p:inputText value="#{personBean.person.nmPerson}" style="width: 80%;" p:placeholder="Pesquisar por nome">
+                <p:ajax event="keyup" listener="#{personBean.init}" update="tabela"/>
+            </p:inputText>
+            <p:commandButton value="Pesquisar" icon="pi pi-search" action="#{personBean.init}" update="tabela" style="margin-left: 10px;"/>
+        </p:panel>
+
+        <p:dataTable id="tabela" value="#{personBean.persons}" var="person" paginator="true" rows="10"
+                     emptyMessage="Nenhuma pessoa encontrada" style="margin-top: 20px;">
+            <p:column headerText="Nome">
+                <h:outputText value="#{person.nmPerson}"/>
+            </p:column>
+            <p:column headerText="Email">
+                <h:outputText value="#{person.nmEmail}"/>
+            </p:column>
+            <p:column headerText="Telefone">
+                <h:outputText value="#{person.nrTelephone}"/>
+            </p:column>
+            <p:column headerText="Ações">
+                <p:commandButton icon="pi pi-pencil" action="#{personBean.edit(person)}" update=":formEditar"
+                                 oncomplete="PF('dialogEditar').show()" style="margin-right: 5px;" title="Editar"/>
+                <p:commandButton icon="pi pi-trash" action="#{personBean.delete(person)}" update="tabela"
+                                 styleClass="ui-button-danger" title="Remover"/>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+
+    <!-- Diálogo para edição -->
+    <p:dialog header="Editar Pessoa" widgetVar="dialogEditar" modal="true" resizable="false" width="400" height="250">
+        <h:form id="formEditar">
+            <p:panelGrid columns="2" style="width: 100%;">
+                <p:outputLabel value="Nome:" for="nome"/>
+                <p:inputText id="nome" value="#{personBean.person.nmPerson}" required="true"/>
+
+                <p:outputLabel value="Email:" for="email"/>
+                <p:inputText id="email" value="#{personBean.person.nmEmail}"/>
+
+                <p:outputLabel value="Telefone:" for="telefone"/>
+                <p:inputText id="telefone" value="#{personBean.person.nrTelephone}"/>
+            </p:panelGrid>
+
+            <p:commandButton value="Salvar" action="#{personBean.save}" update="tabela" 
+                             oncomplete="PF('dialogEditar').hide()" style="margin-top: 10px;"/>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>
